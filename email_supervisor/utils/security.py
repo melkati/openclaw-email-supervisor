@@ -55,8 +55,8 @@ def resolve_secret(ref: str) -> str:
             "Secret reference is empty. Ensure all references are properly defined."
         )
 
-    if ref is None:
-        raise SecretResolutionError("Secret reference is None. Ensure all references are properly defined.")
+    if ref is None or not isinstance(ref, str):
+        raise SecretResolutionError("Secret reference must be a non-empty string. Ensure all references are properly defined.")
 
     if ":" not in ref:
         raise SecretResolutionError(
