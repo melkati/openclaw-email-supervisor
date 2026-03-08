@@ -1,0 +1,70 @@
+[
+  {
+    "uid": "1001",
+    "message_id": "<msg1001@test.local>",
+    "from_address": "alice@example.com",
+    "from_display": "Alice Smith",
+    "to_addresses": ["user@test.local"],
+    "cc_addresses": [],
+    "subject": "Meeting tomorrow at 3pm",
+    "date_str": "2024-01-15T10:30:00+00:00",
+    "headers": {
+      "Authentication-Results": "spf=pass dkim=pass",
+      "List-Unsubscribe": null,
+      "Reply-To": null
+    },
+    "body_snippet": "Hi, just a reminder about our meeting tomorrow at 3pm in room B.",
+    "expected_label": "IMPORTANT"
+  },
+  {
+    "uid": "1002",
+    "message_id": "<msg1002@spam.net>",
+    "from_address": "deals@super-cheap-pills.net",
+    "from_display": "Amazing Deals",
+    "to_addresses": ["user@test.local"],
+    "cc_addresses": [],
+    "subject": "FREE!!! Win $1,000,000 NOW!!!",
+    "date_str": "2024-01-15T03:15:00+00:00",
+    "headers": {
+      "Authentication-Results": "spf=fail dkim=fail",
+      "List-Unsubscribe": null,
+      "Reply-To": "reply-to-different@other-domain.com"
+    },
+    "body_snippet": "Congratulations! You have been selected to receive a prize...",
+    "expected_label": "SPAM"
+  },
+  {
+    "uid": "1003",
+    "message_id": "<msg1003@newsletter.com>",
+    "from_address": "news@tech-newsletter.com",
+    "from_display": "Tech Weekly",
+    "to_addresses": ["user@test.local"],
+    "cc_addresses": [],
+    "subject": "This week in tech: AI breakthroughs",
+    "date_str": "2024-01-15T08:00:00+00:00",
+    "headers": {
+      "Authentication-Results": "spf=pass dkim=pass",
+      "List-Unsubscribe": "<mailto:unsub@tech-newsletter.com>",
+      "Reply-To": null
+    },
+    "body_snippet": "Welcome to this week's roundup of tech news...",
+    "expected_label": "NEUTRAL"
+  },
+  {
+    "uid": "1004",
+    "message_id": "<msg1004@phish.evil>",
+    "from_address": "security@bank-secure-verify.com",
+    "from_display": "Bank Security Team",
+    "to_addresses": ["user@test.local"],
+    "cc_addresses": [],
+    "subject": "URGENT: Verify your account immediately",
+    "date_str": "2024-01-15T02:45:00+00:00",
+    "headers": {
+      "Authentication-Results": "spf=fail dkim=none",
+      "List-Unsubscribe": null,
+      "Reply-To": "different@suspicious-domain.com"
+    },
+    "body_snippet": "Dear customer, we detected unusual activity on your account. Click here to verify...",
+    "expected_label": "SUSPICIOUS"
+  }
+]
