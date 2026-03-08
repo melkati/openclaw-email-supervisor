@@ -96,6 +96,11 @@ class AccountConfig:
         config.imap.username = resolve_secret(config.imap.username)
         config.imap.password_ref = resolve_secret(config.imap.password_ref)
 
+        # Log resolved secrets
+        import logging
+        logging.debug(f"Resolved username: {config.imap.username}")
+        logging.debug(f"Resolved password: {config.imap.password_ref}")
+
         return config
 
 
