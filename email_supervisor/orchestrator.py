@@ -220,7 +220,9 @@ class AccountOrchestrator:
                 continue  # skip templates
             try:
                 raw = json.loads(path.read_text(encoding="utf-8"))
+                log.debug(f"Raw account config: {raw}")
                 config = AccountConfig.from_dict(raw)
+                log.debug(f"Loaded account config: {config}")
                 if not config.enabled:
                     log.info("Skipping disabled account %s", config.account_id)
                     continue
