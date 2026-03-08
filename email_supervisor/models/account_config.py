@@ -15,7 +15,7 @@ class IMAPConfig:
     port: int = 993
     tls: bool = True
     username: str = ""
-    password_ref: str = ""  # e.g. "env:WORK_IMAP_PASS"
+    password_ref: Optional[str] = None  # e.g. "env:WORK_IMAP_PASS"
     folders: list[str] = field(default_factory=lambda: ["INBOX"])
     idle_supported: bool = True
 
