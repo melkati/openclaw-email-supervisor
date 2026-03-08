@@ -122,41 +122,28 @@ Supported secret reference schemes: `env:VAR_NAME`, `file:/path/to/file`.
 
 ### Common Issues
 
-#### 1. Missing Secrets
-If you see an error like `[✗] Missing secret file`, it means one or more required secret files are missing in the `secrets/` directory. To fix this:
+#### 1. OpenClaw Doesn't Recognize the Skill
+- Ensure the skill is installed in the correct directory: `~/.openclaw/skills/email-supervisor`.
+- Verify the skill is listed in OpenClaw's configuration (e.g., `skills.json`).
+- Restart OpenClaw to reload skills: `openclaw restart`.
 
-1. Check the `secrets/` directory for the missing file(s).
-2. Create the file(s) if they don't exist, and add the required value. For example:
-   ```bash
-   nano secrets/email_password
-   ```
-3. Ensure the file permissions are correct:
-   ```bash
-   chmod 600 secrets/*
-   ```
+#### 2. Missing Secrets
+- Check that all required secrets are present in the `secrets/` directory.
+- Ensure the `secrets/` directory has the correct permissions (`700`) and files are `600`.
 
-#### 2. Placeholder Values
-If you see an error like `[!] Secret secrets/<name> still has placeholder value`, it means the secret file contains a placeholder value (e.g., `YOUR_PASSWORD`). To fix this:
+#### 3. Logs Not Found
+- Ensure the `data/logs/` directory exists and is writable.
+- Run the supervisor to generate logs: `./run.sh`.
 
-1. Open the file and replace the placeholder with the actual value.
-2. Save the file and restart the supervisor.
-
-#### 3. Environment Variables Not Loaded
-If secrets are not being loaded into environment variables, ensure you are sourcing the `load_secrets.sh` script correctly:
-
-```bash
-source load_secrets.sh
-```
-
-Alternatively, use the `file:` scheme in your configuration files.
-
-#### 4. Permission Denied Errors
-If you encounter permission errors, ensure the `secrets/` directory and its files have the correct permissions:
-
-```bash
-chmod 700 secrets/
-chmod 600 secrets/*
-```
+### Debugging
+- Use the `tail-log` subcommand to view recent logs:
+  ```bash
+  python -m email_supervisor tail-log 50
+  ```
+- Check the OpenClaw logs for skill-related errors:
+  ```bash
+  tail -f ~/.openclaw/logs/openclaw.log
+  ```
 
 ### Debugging Tips
 - Run the `load_secrets.sh` script manually to check for errors:

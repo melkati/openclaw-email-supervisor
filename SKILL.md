@@ -79,3 +79,40 @@ Secret reference schemes supported in config files:
 3. A **learning engine** runs after each batch to detect patterns and propose
    new rules automatically.
 4. Notifications and configuration happen through Telegram.
+
+### Skill Integration with OpenClaw
+
+To ensure OpenClaw recognizes the `email-supervisor` skill:
+
+1. **Install the Skill**:
+   - Clone the repository into the OpenClaw skills directory:
+     ```bash
+     cd ~/.openclaw/skills
+     git clone https://github.com/melkati/openclaw-email-supervisor.git email-supervisor
+     ```
+
+2. **Verify Configuration**:
+   - Ensure the skill is listed in OpenClaw's configuration file (e.g., `skills.json`):
+     ```json
+     {
+       "skills": [
+         "email-supervisor"
+       ]
+     }
+     ```
+
+3. **Restart OpenClaw**:
+   - Reload OpenClaw to recognize the new skill:
+     ```bash
+     openclaw restart
+     ```
+
+4. **Test the Skill**:
+   - Check the status of the skill:
+     ```bash
+     python -m email_supervisor status
+     ```
+   - View recent logs:
+     ```bash
+     python -m email_supervisor tail-log 50
+     ```
