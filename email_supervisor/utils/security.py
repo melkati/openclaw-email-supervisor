@@ -50,7 +50,12 @@ def resolve_secret(ref: str) -> str:
         If the scheme is unknown or the key cannot be found.
     """
     logging.debug(f"Resolving secret reference: {ref}")
-    if not ref or ":" not in ref:
+    if not ref.strip():
+        raise SecretResolutionError(
+            "Secret reference is empty. Ensure all references are properly defined."
+        )
+
+    if ":" not in ref:
         raise SecretResolutionError(
             f"Invalid secret reference format: '{ref}'. "
             "Expected 'scheme:key' (e.g. 'env:MY_PASS' or 'file:secrets/password')."
