@@ -1,0 +1,38 @@
+{
+  "account_id": "my-email",
+  "display_name": "My Email Account",
+  "enabled": true,
+  "imap": {
+    "host": "imap.example.com",
+    "port": 993,
+    "ssl": true,
+    "username": "user@example.com",
+    "password": "env:MY_EMAIL_IMAP_PASSWORD",
+    "folders": ["INBOX"]
+  },
+  "polling": {
+    "interval_seconds": 120,
+    "batch_size": 50,
+    "max_age_hours": 24
+  },
+  "pipeline": {
+    "dedup_enabled": true,
+    "whitelist_blacklist_enabled": true,
+    "rules_enabled": true,
+    "ai_enabled": true,
+    "ai_confidence_threshold": 0.7
+  },
+  "learning": {
+    "enabled": true,
+    "auto_whitelist": true,
+    "auto_blacklist": true,
+    "shadow_rule_generation": true,
+    "shadow_promotion_threshold": 0.95
+  },
+  "notifications": {
+    "notify_important": true,
+    "notify_suspicious": true,
+    "notify_spam_summary": true,
+    "digest_enabled": true
+  }
+}

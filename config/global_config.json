@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "log_level": "INFO",
+  "ai": {
+    "provider": "openai",
+    "base_url": "https://api.openai.com/v1",
+    "api_key": "env:OPENAI_API_KEY",
+    "model": "gpt-4o-mini",
+    "daily_token_budget": 500000
+  },
+  "telegram": {
+    "bot_token": "env:TELEGRAM_BOT_TOKEN",
+    "authorized_chat_ids": []
+  },
+  "notifications": {
+    "enabled_channels": ["telegram"],
+    "digest_hour_utc": 8
+  }
+}
