@@ -94,6 +94,19 @@ def setup_logging(
         )
         logger.addHandler(ch)
 
+    # Ensure the root logger is set to DEBUG
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    if console:
+        ch = logging.StreamHandler(sys.stderr)
+        ch.setFormatter(
+            logging.Formatter(
+                "%(asctime)s %(levelname)-7s [%(name)s] %(message)s",
+                datefmt="%H:%M:%S",
+            )
+        )
+        root_logger.addHandler(ch)
+
     return logger
 
 
