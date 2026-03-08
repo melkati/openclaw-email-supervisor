@@ -18,7 +18,6 @@ environment variables.
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
 
 class SecretResolutionError(Exception):
@@ -56,33 +55,21 @@ def resolve_secret(ref: str) -> str:
         )
 
     scheme, key = ref.split(":", 1)
-    scheme = scheme.strip().lower()
 
     if scheme == "env":
-        value = os.environ.get(key.strip())
-        if value is None:
-            raise SecretResolutionError(
-                f"Environment variable {key!r} is not set."
-            )
-        return value
-
-    if scheme == "file":
-        path = Path(key.strip()).expanduser()
-        if not path.is_file():
-            raise SecretResolutionError(
-                f"Secret file not found: {path}"
-            )
-        value = path.read_text(encoding="utf-8").strip()
+        value = os.getenv(key)
         if not value:
-            raise SecretResolutionError(
-                f"Secret file is empty: {path}"
-            )
+            raise SecretResolutionError(f"Environment variable '{key}' is not set.")
         return value
 
-    if scheme == "vault":
-        # Future: integrate with OS keyring / secret manager
-        raise SecretResolutionError(
-            f"Vault backend is not implemented yet (key={key!r})."
-        )
+    elif scheme == "file":
+        try:
+            with open(key, "r") as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            raise SecretResolutionError(f"Secret file '{key}' not found.")
+        except Exception as e:
+            raise SecretResolutionError(f"Error reading secret file '{key}': {e}")
 
-    raise SecretResolutionError(f"Unknown secret scheme: {scheme!r}.")
+    else:
+        raise SecretResolutionError(f"Unsupported secret scheme: '{scheme}'.")
