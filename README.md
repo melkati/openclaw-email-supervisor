@@ -118,6 +118,57 @@ Supported secret reference schemes: `env:VAR_NAME`, `file:/path/to/file`.
     └── logs/                   # Rotating JSON logs
 ```
 
+## Troubleshooting
+
+### Common Issues
+
+#### 1. Missing Secrets
+If you see an error like `[✗] Missing secret file`, it means one or more required secret files are missing in the `secrets/` directory. To fix this:
+
+1. Check the `secrets/` directory for the missing file(s).
+2. Create the file(s) if they don't exist, and add the required value. For example:
+   ```bash
+   nano secrets/email_password
+   ```
+3. Ensure the file permissions are correct:
+   ```bash
+   chmod 600 secrets/*
+   ```
+
+#### 2. Placeholder Values
+If you see an error like `[!] Secret secrets/<name> still has placeholder value`, it means the secret file contains a placeholder value (e.g., `YOUR_PASSWORD`). To fix this:
+
+1. Open the file and replace the placeholder with the actual value.
+2. Save the file and restart the supervisor.
+
+#### 3. Environment Variables Not Loaded
+If secrets are not being loaded into environment variables, ensure you are sourcing the `load_secrets.sh` script correctly:
+
+```bash
+source load_secrets.sh
+```
+
+Alternatively, use the `file:` scheme in your configuration files.
+
+#### 4. Permission Denied Errors
+If you encounter permission errors, ensure the `secrets/` directory and its files have the correct permissions:
+
+```bash
+chmod 700 secrets/
+chmod 600 secrets/*
+```
+
+### Debugging Tips
+- Run the `load_secrets.sh` script manually to check for errors:
+  ```bash
+  ./load_secrets.sh
+  ```
+- Check the logs in the `data/logs/` directory for detailed error messages.
+- Use the `file:` scheme in your configuration for direct file references.
+
+### Contact
+For further assistance, open an issue on the [GitHub repository](https://github.com/melkati/openclaw-email-supervisor/issues).
+
 ## License
 
 MIT
