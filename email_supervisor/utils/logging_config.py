@@ -105,4 +105,13 @@ def get_logger(component: str) -> logging.Logger:
         log = get_logger("pipeline")
         log.info("email_classified", extra={"account": "work", ...})
     """
-    return logging.getLogger(f"email_supervisor.{component}")
+    logger = logging.getLogger(f"email_supervisor.{component}")
+    if not logger.hasHandlers():
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)-8s [%(name)s] %(message)s"
+        )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
+    return logger
