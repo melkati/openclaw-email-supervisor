@@ -80,7 +80,7 @@ class AccountConfig:
     @classmethod
     def from_dict(cls, data: dict) -> AccountConfig:
         """Build an AccountConfig from a parsed JSON dict."""
-        return cls(
+        config = cls(
             account_id=data.get("account_id", ""),
             display_name=data.get("display_name", ""),
             enabled=data.get("enabled", True),
@@ -90,6 +90,13 @@ class AccountConfig:
             learning=_build(LearningConfig, data.get("learning", {})),
             notifications=_build(NotificationConfig, data.get("notifications", {})),
         )
+
+        # Resolve secrets for IMAP username and password
+        from email_supervisor.utils.security import resolve_secret
+        config.imap.username = resolve_secret(config.imap.username)
+        config.imap.password_ref = resolve_secret(config.imap.password_ref)
+
+        return config
 
 
 def _build(cls: type, data: dict):  # noqa: ANN202
