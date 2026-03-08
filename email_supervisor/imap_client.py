@@ -63,17 +63,17 @@ class IMAPClient:
                 "aioimaplib is required. Install it: pip install aioimaplib"
             )
 
-        password = resolve_secret(self._config.password_ref)
+        password = self._config.password
 
         try:
-            if self._config.tls:
+            if self._config.ssl:
                 self._client = aioimaplib.IMAP4_SSL(
                     host=self._config.host,
                     port=self._config.port,
                 )
             else:
                 log.warning(
-                    "TLS disabled for %s — connection is NOT encrypted",
+                    "SSL/TLS disabled for %s — connection is NOT encrypted",
                     self._account_id,
                 )
                 self._client = aioimaplib.IMAP4(

@@ -13,9 +13,9 @@ class IMAPConfig:
 
     host: str = ""
     port: int = 993
-    tls: bool = True
+    ssl: bool = True
     username: str = ""
-    password_ref: Optional[str] = None  # e.g. "env:WORK_IMAP_PASS"
+    password: str = ""  # e.g. "env:WORK_IMAP_PASS"
     folders: list[str] = field(default_factory=lambda: ["INBOX"])
     idle_supported: bool = True
 
@@ -95,11 +95,11 @@ class AccountConfig:
         # Resolve secrets for IMAP username and password
         from email_supervisor.utils.security import resolve_secret
         config.imap.username = resolve_secret(config.imap.username)
-        config.imap.password_ref = resolve_secret(config.imap.password_ref)
+        config.imap.password = resolve_secret(config.imap.password)
 
         # Log resolved secrets
         logging.debug(f"Resolved username: {config.imap.username}")
-        logging.debug(f"Resolved password: {config.imap.password_ref}")
+        logging.debug(f"Resolved password: {config.imap.password}")
 
         return config
 
