@@ -1,6 +1,9 @@
 # Runtime data — never commit
 data/
 
+# Secrets — credentials stored as individual files (NEVER commit)
+secrets/
+
 # Account configs contain credential references — use templates only
 config/accounts/*.json
 !config/accounts/_template.json

@@ -3,15 +3,22 @@
 Passwords and tokens are never stored in plaintext inside account JSON
 files.  Instead, each sensitive value is a *reference* like:
 
-- ``env:VARIABLE_NAME`` — read from an environment variable.
-- ``vault:key_name``    — (future) read from an OS secret store.
+- ``env:VARIABLE_NAME``  — read from an environment variable.
+- ``file:/path/to/file`` — read the first line of a local file.
+- ``vault:key_name``     — (future) read from an OS secret store.
 
-This module resolves those references at runtime.
+The recommended workflow for production is to use ``load_secrets.sh``
+which reads files from the ``secrets/`` directory and exports them as
+environment variables, then reference them with ``env:VAR_NAME``.
+
+Alternatively, use ``file:`` to read secret files directly without
+environment variables.
 """
 
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 
 class SecretResolutionError(Exception):
@@ -26,6 +33,12 @@ def resolve_secret(ref: str) -> str:
     ref:
         A reference string in the form ``"scheme:key"``.
 
+        Supported schemes:
+
+        - ``env:VAR_NAME`` — read from environment variable ``VAR_NAME``.
+        - ``file:/path``   — read the contents of a local file (trimmed).
+        - ``vault:key``    — (future) OS keyring / secret manager.
+
     Returns
     -------
     str
@@ -39,7 +52,7 @@ def resolve_secret(ref: str) -> str:
     if not ref or ":" not in ref:
         raise SecretResolutionError(
             f"Invalid secret reference format: {ref!r}. "
-            "Expected 'scheme:key' (e.g. 'env:MY_PASS')."
+            "Expected 'scheme:key' (e.g. 'env:MY_PASS' or 'file:secrets/password')."
         )
 
     scheme, key = ref.split(":", 1)
@@ -50,6 +63,19 @@ def resolve_secret(ref: str) -> str:
         if value is None:
             raise SecretResolutionError(
                 f"Environment variable {key!r} is not set."
+            )
+        return value
+
+    if scheme == "file":
+        path = Path(key.strip()).expanduser()
+        if not path.is_file():
+            raise SecretResolutionError(
+                f"Secret file not found: {path}"
+            )
+        value = path.read_text(encoding="utf-8").strip()
+        if not value:
+            raise SecretResolutionError(
+                f"Secret file is empty: {path}"
             )
         return value
 

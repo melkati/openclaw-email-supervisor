@@ -49,8 +49,24 @@ Learns automatically from traffic patterns and is fully configurable via Telegra
 | Variable | Required | Description |
 | --- | --- | --- |
 | `EMAIL_SUPERVISOR_CONFIG_PATH` | Yes | Path to the `config/` directory |
-| `TELEGRAM_BOT_TOKEN` | No | Telegram bot token for notifications and config |
-| Account-specific `*_IMAP_PASS` | Yes | IMAP passwords referenced by `password_ref` in account configs |
+| `EMAIL_USERNAME` | Yes | IMAP email address (loaded from `secrets/email_username`) |
+| `EMAIL_PASSWORD` | Yes | IMAP app password (loaded from `secrets/email_password`) |
+| `TELEGRAM_BOT_TOKEN` | No | Telegram bot token (loaded from `secrets/telegram_bot_token`) |
+| `TELEGRAM_CHAT_ID` | No | Telegram chat ID (loaded from `secrets/telegram_chat_id`) |
+
+### Secrets management
+
+Credentials are stored in individual files inside `secrets/` (git-ignored,
+permissions `700`). The `run.sh` script loads them automatically via
+`load_secrets.sh` — you never need to export variables manually.
+
+Secret reference schemes supported in config files:
+
+| Scheme | Example | Description |
+| --- | --- | --- |
+| `env:` | `env:EMAIL_PASSWORD` | Read from environment variable |
+| `file:` | `file:secrets/email_password` | Read from a local file |
+| `vault:` | `vault:email_pass` | *(future)* OS keyring / secret manager |
 
 ## How it works
 

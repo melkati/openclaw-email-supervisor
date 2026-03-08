@@ -28,11 +28,49 @@
 # Clone into your OpenClaw skills directory
 cd ~/.openclaw/skills
 git clone https://github.com/melkati/openclaw-email-supervisor.git email-supervisor
-
-# Install dependencies
 cd email-supervisor
-pip install -r requirements.txt
+
+# Run the installer (creates venv, secrets/, dependencies)
+chmod +x install.sh load_secrets.sh run.sh
+./install.sh
 ```
+
+## Secrets Management
+
+Credentials are **never stored in config files**. Instead, they live in
+individual files inside a `secrets/` directory that is git-ignored and
+restricted to your user only.
+
+After running `./install.sh`, edit each file with your real values:
+
+```bash
+nano secrets/email_username        # your IMAP email address
+nano secrets/email_password        # your IMAP app password (not your login password)
+nano secrets/telegram_bot_token    # Telegram bot token from @BotFather
+nano secrets/telegram_chat_id      # your Telegram chat ID
+```
+
+The startup script `run.sh` loads these files into environment variables
+automatically — you never need to `export` anything manually.
+
+> **Security notes:**
+> - `secrets/` directory has permissions `700` (owner only).
+> - Each secret file has permissions `600`.
+> - `secrets/` is in `.gitignore` and will **never** be committed.
+> - For Gmail, use an [App Password](https://myaccount.google.com/apppasswords), not your login password.
+
+### Alternative: file: scheme
+
+Instead of environment variables, you can reference secret files directly
+in your account config:
+
+```json
+{
+  "password": "file:secrets/email_password"
+}
+```
+
+Supported secret reference schemes: `env:VAR_NAME`, `file:/path/to/file`.
 
 ## Configuration
 
@@ -41,13 +79,23 @@ pip install -r requirements.txt
    cp config/accounts/_template.json config/accounts/my_account.json
    ```
 2. Edit the new file with your IMAP credentials and preferences.
-3. Set the required environment variables (see SKILL.md).
-4. Run: `python -m email_supervisor run`
+3. Start the supervisor:
+   ```bash
+   ./run.sh
+   ```
 
 ## Project Structure
 
 ```
+├── install.sh                  # First-time setup script
+├── load_secrets.sh             # Reads secrets/ → env vars
+├── run.sh                      # Start the supervisor
 ├── SKILL.md                    # OpenClaw skill definition
+├── secrets/                    # Credentials (git-ignored, 700)
+│   ├── email_username          # IMAP username
+│   ├── email_password          # IMAP app password
+│   ├── telegram_bot_token      # Telegram bot token
+│   └── telegram_chat_id        # Telegram chat ID
 ├── email_supervisor/           # Main Python package
 │   ├── main.py                 # CLI entry point
 │   ├── orchestrator.py         # Multi-account orchestrator
