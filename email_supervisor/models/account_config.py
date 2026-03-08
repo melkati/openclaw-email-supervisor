@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Optional
+import logging
 
 
 @dataclass(slots=True)
@@ -97,7 +98,6 @@ class AccountConfig:
         config.imap.password_ref = resolve_secret(config.imap.password_ref)
 
         # Log resolved secrets
-        import logging
         logging.debug(f"Resolved username: {config.imap.username}")
         logging.debug(f"Resolved password: {config.imap.password_ref}")
 
