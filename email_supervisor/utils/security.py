@@ -50,13 +50,15 @@ def resolve_secret(ref: str) -> str:
         If the scheme is unknown or the key cannot be found.
     """
     logging.debug(f"Resolving secret reference: {ref}")
+    if ref is None:
+        raise SecretResolutionError("Secret reference is None. Ensure all references are properly defined.")
+
+    ref = ref.strip()  # Ensure ref is stripped only after validation
+
     if not ref.strip():
         raise SecretResolutionError(
             "Secret reference is empty. Ensure all references are properly defined."
         )
-
-    if ref is None or not isinstance(ref, str):
-        raise SecretResolutionError("Secret reference must be a non-empty string. Ensure all references are properly defined.")
 
     if ":" not in ref:
         raise SecretResolutionError(
