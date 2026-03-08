@@ -18,6 +18,7 @@ environment variables.
 from __future__ import annotations
 
 import os
+import logging
 
 
 class SecretResolutionError(Exception):
@@ -48,9 +49,10 @@ def resolve_secret(ref: str) -> str:
     SecretResolutionError
         If the scheme is unknown or the key cannot be found.
     """
+    logging.debug(f"Resolving secret reference: {ref}")
     if not ref or ":" not in ref:
         raise SecretResolutionError(
-            f"Invalid secret reference format: {ref!r}. "
+            f"Invalid secret reference format: '{ref}'. "
             "Expected 'scheme:key' (e.g. 'env:MY_PASS' or 'file:secrets/password')."
         )
 
@@ -58,6 +60,7 @@ def resolve_secret(ref: str) -> str:
 
     if scheme == "env":
         value = os.getenv(key)
+        logging.debug(f"Resolved env secret '{key}': {value}")
         if not value:
             raise SecretResolutionError(f"Environment variable '{key}' is not set.")
         return value
@@ -65,7 +68,9 @@ def resolve_secret(ref: str) -> str:
     elif scheme == "file":
         try:
             with open(key, "r") as f:
-                return f.read().strip()
+                value = f.read().strip()
+                logging.debug(f"Resolved file secret '{key}': {value}")
+                return value
         except FileNotFoundError:
             raise SecretResolutionError(f"Secret file '{key}' not found.")
         except Exception as e:
